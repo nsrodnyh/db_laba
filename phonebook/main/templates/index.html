@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ru">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link type="image/x-icon" href="{% static 'icon/favicon.ico' %}" rel="shortcut icon">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+          crossorigin="anonymous">
+    <link href="{% static 'style/main.css' %}" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+    <title>Телефонный справочник</title>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{% url 'show_contacts' %}">Телефонный справочник</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Переключатель навигации">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        {% url 'show_contacts' as current_url %}
+                        <a class="nav-link {% if current_url == request.path %} active {% endif %}" href="{{ current_url }}">Главная</a>
+                    </li>
+                    <li class="nav-item">
+                        {% url 'edit_first_name_table' as current_url %}
+                        <a class="nav-link {% if current_url == request.path %} active {% endif %}" href="{% url 'edit_first_name_table' %}">Имена</a>
+                    </li>
+                    <li class="nav-item">
+                        {% url 'edit_last_name_table' as current_url %}
+                        <a class="nav-link {% if current_url == request.path %} active {% endif %}" href="{% url 'edit_last_name_table' %}">Фамилии</a>
+                    </li>
+                    <li class="nav-item">
+                        {% url 'edit_patronymic_table' as current_url %}
+                        <a class="nav-link {% if current_url == request.path %} active {% endif %}" href="{% url 'edit_patronymic_table' %}">Отчества</a>
+                    </li>
+                    <li class="nav-item">
+                        {% url 'edit_street_table' as current_url %}
+                        <a class="nav-link {% if current_url == request.path %} active {% endif %}" href="{% url 'edit_street_table' %}">Улицы</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+            crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/677a185398.js" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.js"
+            integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+            crossorigin="anonymous"></script>
+    {% block content %}
+    {% endblock %}
+</body>
+</html>

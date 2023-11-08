@@ -1,0 +1,11 @@
+{% extends 'index.html' %}
+{% block content %}
+{% load crispy_forms_tags %}
+<form method="post" class="form mx-3">
+    {% csrf_token %}
+    <div class="small-text-input">
+    {{ form|crispy }}
+    </div>
+    <input type="submit" value="Сохранить" class="btn btn-primary mb-3">
+</form>
+{% endblock %}

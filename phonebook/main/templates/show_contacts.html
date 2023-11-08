@@ -22,17 +22,18 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
-                <button type="button" class="btn btn-primary" id="submitFilterButton" name="filter_form_submit">Показать <выбранные></выбранные></button>
+                <button type="button" class="btn btn-primary" id="submitFilterButton" name="filter_form_submit">Показать
+                    выбранные</выбранные></button>
             </div>
         </div>
     </div>
 </div>
 <script>
-$(document).ready(function () {
-    $("#submitFilterButton").click(function () {
-        $("#filterForm").submit();
+    $(document).ready(function () {
+        $("#submitFilterButton").click(function () {
+            $("#filterForm").submit();
+        });
     });
-});
 </script>
 <table id="all-contacts" class="table table-primary">
     <thead>
@@ -80,127 +81,83 @@ $(document).ready(function () {
             <div class="modal-body">
                 <form method="post" id="myForm" class="needs-validation" novalidate>
                     {% csrf_token %}
-                    <div class="form-group">
-                        <label for="{{ form.last_name_field.id_for_label }}">Фамилия</label>
-                        <input type="text" class="form-control" id="{{ form.last_name_field.id_for_label }}"
-                               name="{{ form.last_name_field.name }}" maxlength="{{ form.last_name_field.field.max_length }}"
-                               list="last-name-examples">
-                        <datalist id="last-name-examples" class="custom-datalist">
-                            {% for tuple in all_last_name %}
-                            <option value="{{ tuple.0 }}"></option>
-                            {% endfor %}}
-                        </datalist>
-                    </div>
-                    <div class="form-group">
-                        <label for="{{ form.first_name_field.id_for_label }}">Имя*</label>
-                        <input type="text" class="form-control" id="{{ form.first_name_field.id_for_label }}"
-                               name="{{ form.first_name_field.name }}" maxlength="{{ form.first_name_field.field.max_length }}"
-                               list="first-name-examples" required>
-                        <datalist id="first-name-examples" class="custom-datalist">
-                            {% for tuple in all_first_name %}
-                            <option value="{{ tuple.0 }}"></option>
-                            {% endfor %}}
-                        </datalist>
-                        <div class="invalid-feedback">
-                            Поле Имя обязательно для заполнения.
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="{{ form.patronymic_field.id_for_label }}">Отчество</label>
-                        <input type="text" class="form-control" id="{{ form.patronymic_field.id_for_label }}"
-                               name="{{ form.patronymic_field.name }}" maxlength="{{ form.patronymic_field.field.max_length }}"
-                               list="patronymic-examples">
-                        <datalist id="patronymic-examples" class="custom-datalist">
-                            {% for tuple in all_patronymic %}
-                            <option value="{{ tuple.0 }}"></option>
-                            {% endfor %}}
-                        </datalist>
-                    </div>
-                    <div class="form-group">
-                        <label for="{{ form.street_field.id_for_label }}">Улица</label>
-                        <input type="text" class="form-control" id="{{ form.street_field.id_for_label }}"
-                               name="{{ form.street_field.name }}" maxlength="{{ form.street_field.field.max_length }}"
-                               list="street-examples">
-                        <datalist id="street-examples">
-                            {% for tuple in all_street %}
-                            <option value="{{ tuple.0 }}"></option>
-                            {% endfor %}}
-                        </datalist>
-                    </div>
-                    <div class="form-group">
-                        <label for="{{ form.house_number_field.id_for_label }}">Дом</label>
-                        <input type="number" class="form-control" id="{{ form.house_number_field.id_for_label }}"
-                               name="{{ form.house_number_field.name }}">
-                    </div>
-                    <div class="form-group">
-                        <label for="{{ form.building_field.id_for_label }}">Корпус</label>
-                        <input type="text" class="form-control" id="{{ form.building_field.id_for_label }}"
-                               name="{{ form.building_field.name }}" maxlength="{{ form.building_field.field.max_length }}">
-                    </div>
-                    <div class="form-group">
-                        <label for="{{ form.apartment_field.id_for_label }}">Квартира</label>
-                        <input type="number" class="form-control" id="{{ form.apartment_field.id_for_label }}"
-                               name="{{ form.apartment_field.name }}">
-                    </div>
-                    <div class="form-group">
-                        <label for="{{ form.phone_number_field.id_for_label }}">Номер телефона*</label>
-                        <input type="text" class="form-control" id="{{ form.phone_number_field.id_for_label }}"
-                               name="{{ form.phone_number_field.name }}" maxlength="{{ form.phone_number_field.field.max_length }}"
-                               required>
-                        <div class="invalid-feedback">
-                            Поле Номер телефона обязательно для заполнения.
-                        </div>
-                    </div>
+                    {{ add_form|crispy }}
                 </form>
+                <datalist id="street-examples">
+                    {% for tuple in all_street %}
+                    <option value="{{ tuple.0 }}"></option>
+                    {% endfor %}}
+                </datalist>
+
+
+                <datalist id="patronymic-examples" class="custom-datalist">
+                    {% for tuple in all_patronymic %}
+                    <option value="{{ tuple.0 }}"></option>
+                    {% endfor %}}
+                </datalist>
+
+                <datalist id="first-name-examples" class="custom-datalist">
+                    {% for tuple in all_first_name %}
+                    <option value="{{ tuple.0 }}"></option>
+                    {% endfor %}}
+                </datalist>
+
+                <datalist id="last-name-examples" class="custom-datalist">
+                    {% for tuple in all_last_name %}
+                    <option value="{{ tuple.0 }}"></option>
+                    {% endfor %}}
+                </datalist>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
-                <button type="button" class="btn btn-primary" id="submitFormButton" name="new_contact_form_submit">Сохранить</button>
+                <button type="button" class="btn btn-primary" id="submitFormButton" name="new_contact_form_submit">
+                    Сохранить
+                </button>
             </div>
         </div>
     </div>
 </div>
 <script>
-$(document).ready(function () {
-    $("#submitFormButton").click(function () {
-        $("#myForm").submit();
+    $(document).ready(function () {
+        $("#submitFormButton").click(function () {
+            $("#myForm").submit();
+        });
     });
-});
 </script>
 <script>
-function searchContact() {
-  // Declare variables
-  let input, filter, table, tr, td1, td2, td8, i;
-  input = document.getElementById("search-query");
-  filter = input.value.toUpperCase();
-  table = document.getElementById("all-contacts");
-  tr = table.getElementsByTagName("tr");
+    function searchContact() {
+        // Declare variables
+        let input, filter, table, tr, td1, td2, td8, i;
+        input = document.getElementById("search-query");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("all-contacts");
+        tr = table.getElementsByTagName("tr");
 
-  // Loop through all table rows, and hide those that don't match the search query
-  for (i = 0; i < tr.length; i++) {
-    td1 = tr[i].getElementsByTagName("td")[1];
-    td2 = tr[i].getElementsByTagName("td")[2];
-    td8 = tr[i].getElementsByTagName("td")[8];
+        // Loop through all table rows, and hide those that don't match the search query
+        for (i = 0; i < tr.length; i++) {
+            td1 = tr[i].getElementsByTagName("td")[1];
+            td2 = tr[i].getElementsByTagName("td")[2];
+            td8 = tr[i].getElementsByTagName("td")[8];
 
-    if (td1 || td2 || td8) {
-      let found = false;
-      if (td1 && td1.innerHTML.toUpperCase().indexOf(filter) > -1) {
-        found = true;
-      }
-      if (td2 && td2.innerHTML.toUpperCase().indexOf(filter) > -1) {
-        found = true;
-      }
-      if (td8 && td8.innerHTML.toUpperCase().indexOf(filter) > -1) {
-        found = true;
-      }
+            if (td1 || td2 || td8) {
+                let found = false;
+                if (td1 && td1.innerHTML.toUpperCase().indexOf(filter) > -1) {
+                    found = true;
+                }
+                if (td2 && td2.innerHTML.toUpperCase().indexOf(filter) > -1) {
+                    found = true;
+                }
+                if (td8 && td8.innerHTML.toUpperCase().indexOf(filter) > -1) {
+                    found = true;
+                }
 
-      if (found) {
-        tr[i].style.display = "";
-      } else {
-        tr[i].style.display = "none";
-      }
+                if (found) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
     }
-  }
-}
 </script>
 {% endblock %}

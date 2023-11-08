@@ -23,73 +23,81 @@ def show_contacts(request):
 
     if request.method == 'POST':
         print(request.POST)
-        add_form = NewContactForm(request.POST)
-        if add_form.is_valid():
-            variables = []
-            values = []
-            data = add_form.cleaned_data
-            cursor = connection.cursor()
-            if data['last_name_field']:
-                last_name = tuple([data['last_name_field']])
-                variables.append('last_name_id')
-                try:
-                    cursor.execute('INSERT INTO main_lastname VALUES (default, %s)', last_name)
-                except IntegrityError as e:
-                    print('Integrity Error occurred')
-                    print(e)
-                cursor.execute('SELECT id FROM main_lastname WHERE last_name = %s', last_name)
-                selected_values = cursor.fetchone()[0]
-                values.append(str(selected_values))
-            if data['first_name_field']:
-                first_name = tuple([data['first_name_field']])
-                variables.append('first_name_id')
-                try:
-                    cursor.execute('INSERT INTO main_firstname VALUES (default, %s)', first_name)
-                except IntegrityError:
-                    pass
-                cursor.execute('SELECT id FROM main_firstname WHERE first_name = %s', first_name)
-                selected_values = cursor.fetchone()[0]
-                values.append(str(selected_values))
-            if data['patronymic_field']:
-                patronymic = tuple([data['patronymic_field']])
-                variables.append('patronymic_id')
-                try:
-                    cursor.execute('INSERT INTO main_patronymic VALUES (default, %s)', patronymic)
-                except IntegrityError:
-                    pass
-                cursor.execute('SELECT id FROM main_patronymic WHERE patronymic = %s', patronymic)
-                selected_values = cursor.fetchone()[0]
-                values.append(str(selected_values))
-            if data['street_field']:
-                street = tuple([data['street_field']])
-                variables.append('street_id')
-                try:
-                    cursor.execute('INSERT INTO main_street VALUES (default, %s)', street)
-                except IntegrityError:
-                    pass
-                cursor.execute('SELECT id FROM main_street WHERE street = %s', street)
-                selected_values = cursor.fetchone()[0]
-                values.append(str(selected_values))
+        if 'new_contact_form_submit' in request.POST:
+            add_form = NewContactForm(request.POST)
+            if add_form.is_valid():
+                variables = []
+                values = []
+                data = add_form.cleaned_data
+                cursor = connection.cursor()
+                if data['last_name_field']:
+                    last_name = tuple([data['last_name_field']])
+                    variables.append('last_name_id')
+                    try:
+                        cursor.execute('INSERT INTO main_lastname VALUES (default, %s)', last_name)
+                    except IntegrityError as e:
+                        print('Integrity Error occurred')
+                        print(e)
+                    cursor.execute('SELECT id FROM main_lastname WHERE last_name = %s', last_name)
+                    selected_values = cursor.fetchone()[0]
+                    values.append(str(selected_values))
+                if data['first_name_field']:
+                    first_name = tuple([data['first_name_field']])
+                    variables.append('first_name_id')
+                    try:
+                        cursor.execute('INSERT INTO main_firstname VALUES (default, %s)', first_name)
+                    except IntegrityError:
+                        pass
+                    cursor.execute('SELECT id FROM main_firstname WHERE first_name = %s', first_name)
+                    selected_values = cursor.fetchone()[0]
+                    values.append(str(selected_values))
+                if data['patronymic_field']:
+                    patronymic = tuple([data['patronymic_field']])
+                    variables.append('patronymic_id')
+                    try:
+                        cursor.execute('INSERT INTO main_patronymic VALUES (default, %s)', patronymic)
+                    except IntegrityError:
+                        pass
+                    cursor.execute('SELECT id FROM main_patronymic WHERE patronymic = %s', patronymic)
+                    selected_values = cursor.fetchone()[0]
+                    values.append(str(selected_values))
+                if data['street_field']:
+                    street = tuple([data['street_field']])
+                    variables.append('street_id')
+                    try:
+                        cursor.execute('INSERT INTO main_street VALUES (default, %s)', street)
+                    except IntegrityError:
+                        pass
+                    cursor.execute('SELECT id FROM main_street WHERE street = %s', street)
+                    selected_values = cursor.fetchone()[0]
+                    values.append(str(selected_values))
 
-            if data['house_number_field']:
-                variables.append('number')
-                values.append(str(data['house_number_field']))
-            if data['building_field']:
-                variables.append('building')
-                values.append("'" + data['building_field'] + "'")
-            if data['apartment_field']:
-                variables.append('apartment')
-                values.append(str(data['apartment_field']))
-            if data['phone_number_field']:
-                variables.append('phone_number')
-                values.append("'" + data['phone_number_field'] + "'")
+                if data['house_number_field']:
+                    variables.append('number')
+                    values.append(str(data['house_number_field']))
+                if data['building_field']:
+                    variables.append('building')
+                    values.append("'" + data['building_field'] + "'")
+                if data['apartment_field']:
+                    variables.append('apartment')
+                    values.append(str(data['apartment_field']))
+                if data['phone_number_field']:
+                    variables.append('phone_number')
+                    values.append("'" + data['phone_number_field'] + "'")
 
-            var_string = ', '.join(variables)
-            val_string = ', '.join(values)
-            cursor.execute(f"INSERT INTO main_main ({var_string}) VALUES ({val_string})")
-            return redirect('show_contacts')
+                var_string = ', '.join(variables)
+                val_string = ', '.join(values)
+                cursor.execute(f"INSERT INTO main_main ({var_string}) VALUES ({val_string})")
+                return redirect('show_contacts')
+        elif 'filter_form_submit' in request.POST:
+            filter_form = FilterForm(request.POST)
+            # if filter_form.is_valid():
+        else:
+            add_form = NewContactForm()
+            filter_form = FilterForm()
     else:
         add_form = NewContactForm()
+        filter_form = FilterForm()
 
     all_last_name = []
     all_first_name = []
@@ -117,7 +125,8 @@ def show_contacts(request):
         'all_last_name': all_last_name,
         'all_first_name': all_first_name,
         'all_patronymic': all_patronymic,
-        'all_street': all_street
+        'all_street': all_street,
+        'filter_form': filter_form
     }
     return render(request, template, context)
 

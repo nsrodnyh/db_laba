@@ -9,6 +9,7 @@ def home(request):
 
 
 def show_contacts(request):
+    flag = False
     cursor = connection.cursor()
     cursor.execute(
         '''SELECT main_main.id, main_lastname.last_name, main_firstname.first_name, main_patronymic.patronymic,
@@ -23,8 +24,10 @@ def show_contacts(request):
 
     if request.method == 'POST':
         print(request.POST)
-        if 'new_contact_form_submit' in request.POST:
+        if 'house_number_field' in request.POST:
+            filtered_table = []
             add_form = NewContactForm(request.POST)
+            filter_form = FilterForm()
             if add_form.is_valid():
                 variables = []
                 values = []
@@ -89,15 +92,52 @@ def show_contacts(request):
                 val_string = ', '.join(values)
                 cursor.execute(f"INSERT INTO main_main ({var_string}) VALUES ({val_string})")
                 return redirect('show_contacts')
-        elif 'filter_form_submit' in request.POST:
-            filter_form = FilterForm(request.POST)
-            # if filter_form.is_valid():
         else:
+            filter_form = FilterForm(request.POST)
             add_form = NewContactForm()
-            filter_form = FilterForm()
+            filtered_table = []
+            if filter_form.is_valid():
+                flag = True
+                data = filter_form.cleaned_data
+                query = ''
+                if data['last_name_choice_field']:
+                    if query == '':
+                        query += 'WHERE'
+                    query += f" main_lastname.last_name = '{data['last_name_choice_field']}' "
+                if data['first_name_choice_field']:
+                    if query == '':
+                        query += 'WHERE'
+                    if query != 'WHERE':
+                        query += 'AND'
+                    query += f" main_firstname.first_name = '{data['first_name_choice_field']}' "
+                if data['patronymic_choice_field']:
+                    if query == '':
+                        query += 'WHERE'
+                    if query != 'WHERE ':
+                        query += 'AND'
+                    query += f" main_patronymic.patronymic = '{data['patronymic_choice_field']}' "
+                if data['street_choice_field']:
+                    if query == '':
+                        query += 'WHERE'
+                    if query != 'WHERE ':
+                        query += 'AND'
+                    query += f" main_street.street = '{data['street_choice_field']}' "
+
+                cursor.execute(f'''SELECT main_main.id, main_lastname.last_name, main_firstname.first_name, main_patronymic.patronymic,
+                                main_street.street, 
+                                main_main.number, main_main.building, main_main.apartment, main_main.phone_number 
+                                FROM main_main LEFT JOIN main_lastname ON main_main.last_name_id=main_lastname.id LEFT JOIN main_firstname ON 
+                                main_main.first_name_id=main_firstname.id 
+                                LEFT JOIN main_patronymic ON main_main.patronymic_id=main_patronymic.id LEFT JOIN main_street ON 
+                                main_main.street_id=main_street.id
+                                {query}
+                                ORDER BY main_lastname.last_name''')
+                filtered_table = cursor.fetchall()
+
     else:
         add_form = NewContactForm()
         filter_form = FilterForm()
+        filtered_table = []
 
     all_last_name = []
     all_first_name = []
@@ -126,7 +166,9 @@ def show_contacts(request):
         'all_first_name': all_first_name,
         'all_patronymic': all_patronymic,
         'all_street': all_street,
-        'filter_form': filter_form
+        'filter_form': filter_form,
+        'flag': flag,
+        'filtered_table': filtered_table
     }
     return render(request, template, context)
 
@@ -283,7 +325,7 @@ def edit_last_name_table(request):
 def delete_last_name(request, last_name_id):
     cursor = connection.cursor()
     try:
-        cursor.execute("DELETE FROM main_lastname WHERE id = %s", (last_name_id, ))
+        cursor.execute("DELETE FROM main_lastname WHERE id = %s", (last_name_id,))
         cursor.close()
     except IntegrityError as e:
         print(e)
@@ -298,7 +340,8 @@ def edit_last_name(request, last_name_id):
         if form.is_valid():
             data = form.cleaned_data
             try:
-                cursor.execute("UPDATE main_lastname SET last_name = %s WHERE id = %s", (data['new_last_name_field'], last_name_id))
+                cursor.execute("UPDATE main_lastname SET last_name = %s WHERE id = %s",
+                               (data['new_last_name_field'], last_name_id))
             except IntegrityError as e:
                 print(e)
             return redirect('edit_last_name_table')

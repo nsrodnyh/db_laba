@@ -51,6 +51,7 @@
     </tr>
     </thead>
     <tbody>
+    {% if not flag %}
     {% for row in table %}
     <tr>
         {% for column in row %}
@@ -64,6 +65,21 @@
         <td class="text-center"><a href="delete/{{ row.0 }}"><i class="fas fa-trash"></i></a></td>
     </tr>
     {% endfor %}
+    {% else %}
+    {% for row in filtered_table %}
+    <tr>
+        {% for column in row %}
+        {% if column is None %}
+        <td class="text-center">Не указано</td>
+        {% else %}
+        <td class="text-center">{{ column }}</td>
+        {% endif %}
+        {% endfor %}
+        <td class="text-center"><a href="edit_contact/{{ row.0 }}"><i class="fas fa-edit"></i></a></td>
+        <td class="text-center"><a href="delete/{{ row.0 }}"><i class="fas fa-trash"></i></a></td>
+    </tr>
+    {% endfor %}
+    {% endif %}
     </tbody>
 </table>
 <div class="mt-3 mx-3">
